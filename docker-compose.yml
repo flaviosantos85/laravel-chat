@@ -1,0 +1,33 @@
+version : '3.7'
+
+services :
+
+    backend :
+      build :
+        context : ./backend
+        dockerfile : Dockerfile
+      networks:
+        - app
+      ports :
+        - 8000:8000
+      volumes : 
+        - ./backend:/var/www/html/backend
+
+    frontend :
+      build :
+        context : ./frontend
+        dockerfile : Dockerfile
+      ports :
+        - 3000:3000
+      volumes :
+        - ./frontend:/var/www/html/frontend
+      depends_on : 
+        - backend
+      tty : true
+      networks :
+        - app
+
+networks:
+
+  app : 
+    driver : bridge
