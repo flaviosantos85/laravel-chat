@@ -12,6 +12,13 @@ services :
         - 8000:8000
       volumes : 
         - ./backend:/var/www/html/backend
+      depends_on :  
+        - db
+      environment :
+        DB_HOST : db
+        DB_DATABASE : 'laravel-chat'
+        DB_USERNAME : 'root'
+        DB_PASSWORD : 'root'
 
     frontend :
       build :
@@ -27,7 +34,32 @@ services :
       networks :
         - app
 
-networks:
+    db : 
+      image : mysql:5.7.22
+      environment :
+        MYSQL_DATABASE : 'laravel-chat'
+        MYSQL_USER : 'root'
+        MYSQL_PASSWORD : 'root'
+        MYSQL_ROOT_PASSWORD : 'root' 
+      ports :   
+        - 8083:3306
+      volumes :  
+        - ./mysql:/var/lib/mysql
+      networks : 
+        - app
+    
+    phpmyadmin : 
+      image : phpmyadmin/phpmyadmin
+      links : 
+        - db
+      environment : 
+        PMA_HOST : db
+        PMA_PORT : 3306
+        PMA_ARBITRARY : 1
+      restart : always
+      ports : 
+        - 8081:80
 
+networks:
   app : 
     driver : bridge
